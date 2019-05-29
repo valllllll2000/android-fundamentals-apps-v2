@@ -14,66 +14,52 @@
  * limitations under the License.
  */
 
-package com.example.android.recyclerview;
+package com.example.android.recyclerview
 
-import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.content.Context
+import androidx.recyclerview.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 
-import java.util.LinkedList;
+import java.util.LinkedList
 
 /**
  * Shows how to implement a simple Adapter for a RecyclerView.
  * Demonstrates how to add a click handler for each item in the ViewHolder.
  */
-public class WordListAdapter extends
-        RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
+class WordListAdapter(context: Context, private val mWordList: LinkedList<String>) : RecyclerView.Adapter<WordListAdapter.WordViewHolder>() {
+    private val mInflater = LayoutInflater.from(context)
 
-    private final LinkedList<String> mWordList;
-    private final LayoutInflater mInflater;
+    /**
+     * Creates a new custom view holder to hold the view to display in
+     * the RecyclerView.
+     *
+     * @param itemView The view in which to display the data.
+     * @param adapter The adapter that manages the the data and views
+     * for the RecyclerView.
+     */
+    inner class WordViewHolder(itemView: View, private val mAdapter: WordListAdapter) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        val wordItemView: TextView = itemView.findViewById(R.id.word)
 
-    class WordViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
-        public final TextView wordItemView;
-        final WordListAdapter mAdapter;
-
-        /**
-         * Creates a new custom view holder to hold the view to display in
-         * the RecyclerView.
-         *
-         * @param itemView The view in which to display the data.
-         * @param adapter The adapter that manages the the data and views
-         *                for the RecyclerView.
-         */
-        public WordViewHolder(View itemView, WordListAdapter adapter) {
-            super(itemView);
-            wordItemView = itemView.findViewById(R.id.word);
-            this.mAdapter = adapter;
-            itemView.setOnClickListener(this);
+        init {
+            itemView.setOnClickListener(this)
         }
 
-        @Override
-        public void onClick(View view) {
+        override fun onClick(view: View) {
             // Get the position of the item that was clicked.
-            int mPosition = getLayoutPosition();
+            val mPosition = layoutPosition
 
             // Use that to access the affected item in mWordList.
-            String element = mWordList.get(mPosition);
+            val element = mWordList[mPosition]
             // Change the word in the mWordList.
 
-            mWordList.set(mPosition, "Clicked! " + element);
+            mWordList[mPosition] = "Clicked! $element"
             // Notify the adapter, that the data has changed so it can
             // update the RecyclerView to display the data.
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged()
         }
-    }
-
-    public WordListAdapter(Context context, LinkedList<String> wordList) {
-        mInflater = LayoutInflater.from(context);
-        this.mWordList = wordList;
     }
 
     /**
@@ -91,17 +77,16 @@ public class WordListAdapter extends
      * calls.
      *
      * @param parent   The ViewGroup into which the new View will be added after
-     *                 it is bound to an adapter position.
+     * it is bound to an adapter position.
      * @param viewType The view type of the new View. @return A new ViewHolder
-     *                 that holds a View of the given view type.
+     * that holds a View of the given view type.
      */
-    @Override
-    public WordListAdapter.WordViewHolder onCreateViewHolder(ViewGroup parent,
-                                                             int viewType) {
+    override fun onCreateViewHolder(parent: ViewGroup,
+                                    viewType: Int): WordViewHolder {
         // Inflate an item view.
-        View mItemView = mInflater.inflate(
-                R.layout.wordlist_item, parent, false);
-        return new WordViewHolder(mItemView, this);
+        val mItemView = mInflater.inflate(
+                R.layout.wordlist_item, parent, false)
+        return WordViewHolder(mItemView, this)
     }
 
     /**
@@ -110,17 +95,15 @@ public class WordListAdapter extends
      * reflect the item at the given position.
      *
      * @param holder   The ViewHolder which should be updated to represent
-     *                 the contents of the item at the given position in the
-     *                 data set.
+     * the contents of the item at the given position in the
+     * data set.
      * @param position The position of the item within the adapter's data set.
      */
-    @Override
-    public void onBindViewHolder(WordListAdapter.WordViewHolder holder,
-                                 int position) {
+    override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
         // Retrieve the data for that position.
-        String mCurrent = mWordList.get(position);
+        val mCurrent = mWordList[position]
         // Add the data to the view holder.
-        holder.wordItemView.setText(mCurrent);
+        holder.wordItemView.text = mCurrent
     }
 
     /**
@@ -128,8 +111,7 @@ public class WordListAdapter extends
      *
      * @return The total number of items in this adapter.
      */
-    @Override
-    public int getItemCount() {
-        return mWordList.size();
+    override fun getItemCount(): Int {
+        return mWordList.size
     }
 }
